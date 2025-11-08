@@ -21,8 +21,10 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: |
-          npm install
+        run: npm install
+
+      - name: Fix Gradle permissions
+        run: chmod +x android/gradlew
 
       - name: Build Android
         run: |
@@ -60,8 +62,8 @@ jobs:
       - name: Build iOS app
         run: |
           cd ios
-          xcodebuild -workspace YourApp.xcworkspace \
-                     -scheme YourApp \
+          xcodebuild -workspace FoodDeliveryApp.xcworkspace \
+                     -scheme FoodDeliveryApp \
                      -sdk iphonesimulator \
                      -destination 'platform=iOS Simulator,name=iPhone 15' \
                      build
