@@ -16,6 +16,12 @@ import { products } from '../utils/productsData';
 import { useQuery } from '@tanstack/react-query';
 import { Category, fetchCategories } from '../api/apiClient';
 import CategoryCard from '../components/CategoryCard';
+import { useNavigation } from '@react-navigation/native';
+import {
+  NativeStackNavigationProp,
+  NativeStackNavigatorProps,
+} from '@react-navigation/native-stack';
+import { MainRoutes, MainTabParemList } from '../navigation/Routes';
 
 function CategorySkeletonRow() {
   const placeholders = Array.from({ length: 8 }, (_, i) => i.toString());
@@ -39,6 +45,8 @@ function CategorySkeletonRow() {
 }
 
 const HomeScreen = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<MainTabParemList>>();
   const [query, setQuery] = useState('');
 
   const { data: categories, isLoading } = useQuery<Category>({
@@ -80,7 +88,15 @@ const HomeScreen = () => {
                 keyExtractor={item => item.id.toString()}
                 className="mt-4"
                 renderItem={({ item }) => (
-                  <CategoryCard name={item?.name} imageUrl={item?.imageUrl} />
+                  <CategoryCard
+                    name={item?.name}
+                    imageUrl={item?.imageUrl}
+                    onPress={() =>
+                      navigation.navigate(MainRoutes.Category, {
+                        categoryName: item?.name,
+                      })
+                    }
+                  />
                 )}
               />
             )}

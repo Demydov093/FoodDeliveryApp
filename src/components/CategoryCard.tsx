@@ -4,12 +4,14 @@ import React from 'react';
 export default function CategoryCard({
   name,
   imageUrl,
+  onPress,
 }: {
   name: string;
   imageUrl?: string;
+  onPress?: () => void;
 }) {
   return (
-    <Pressable className="mr-3">
+    <Pressable onPress={onPress} className="mr-3">
       <View className="bg-[#F3E8FF] w-28 h-28 rounded-2xl items-center justify-center p-2 shadow-xl">
         <Image
           source={{ uri: imageUrl }}
