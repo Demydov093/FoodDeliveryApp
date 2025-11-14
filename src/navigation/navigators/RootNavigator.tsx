@@ -7,7 +7,7 @@ import AuthNavigator from './AuthNavigator';
 const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
-  const isAuthenticated = true;
+  const isAuthenticated = false;
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
