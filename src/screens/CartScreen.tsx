@@ -9,7 +9,7 @@ import {
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MainStackParamList } from '../navigation/Routes';
+import { MainRoutes, MainStackParamList } from '../navigation/Routes';
 import { CartItem, cartStore } from '../store/cartStore';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@react-native-vector-icons/ionicons';
@@ -23,6 +23,14 @@ const CartScreen = () => {
   const removeItem = cartStore(s => s.removeItem);
 
   const items = cartStore(s => s.items);
+  const totalItems = items?.reduce(
+    (acc, item) => acc + (item.quantity || 0),
+    0,
+  );
+  const totalPrice = items?.reduce(
+    (acc, item) => acc + (item.price * (item.quantity || 0) || 0),
+    0,
+  );
   const handleIncrement = ({ item }) => updateQuantity(item.id, 1);
   const handleDecrement = ({ item }) => updateQuantity(item.id, -1);
 
@@ -89,6 +97,19 @@ const CartScreen = () => {
         keyExtractor={item => item?.id.toString()}
         className="px-4"
       />
+      {totalItems > 0 && (
+        <View className="absolute bottom-6 left-4 right-4 bg-green-600 flex-row justify-between items-center px-4 py-3 rounded-xl shadow-lg">
+          <Text className="text-white text-base font-semibold">
+            {totalItems} items | {totalPrice}
+          </Text>
+          <Pressable
+            onPress={() => navigation.navigate(MainRoutes.Checkout)}
+            className="bg-white px-4 py-2 rounded-lg"
+          >
+            <Text>Procced</Text>
+          </Pressable>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

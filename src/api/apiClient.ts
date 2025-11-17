@@ -38,7 +38,30 @@ api.interceptors.response.use(
   },
 );
 
-// let authInterceptor: number | null = null;
+let authInterceptor: number | null = null;
+
+export function setAuthToken(token: string | null) {
+  if (authInterceptor !== null) {
+    api.interceptors.request.eject(authInterceptor);
+  }
+  if (token) {
+    authInterceptor = api.interceptors.request.use(config => {
+      config.headers.Authorization = `Bearer ${token}`;
+      return config;
+    });
+  } else {
+    authInterceptor = null;
+  }
+}
 
 export const fetchCategories = async () =>
   (await api.get('/categories')).data as Category;
+
+export const signUp = async (data: {
+  email: string;
+  password: string;
+  phone: string;
+}) => (await api.post('auth/signup', data)).data;
+
+export const login = async (data: { email: string; password: string }) =>
+  (await api.post('auth/login', data)).data;

@@ -1,9 +1,17 @@
-import { Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import {
+  Text,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import React from 'react';
 import { AuthRoutes, AuthStackParamList } from '../navigation/Routes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { Controller, useForm } from 'react-hook-form';
+import { signUp } from '../api/apiClient';
+import { authStore } from '../store/userStore';
 
 type FormData = { email: string; password: string; phone: string };
 
@@ -19,6 +27,19 @@ const SignUpScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
+  const { setAuth } = authStore();
+
+  const onSubmit = async (data: FormData) => {
+    console.log('Submitting signup', data);
+    try {
+      const { user, token } = await signUp(data);
+      console.log('Signup success', user, token);
+      setAuth(user, token);
+    } catch (error) {
+      console.error('Signup error', error);
+      Alert.alert('Error', error?.response?.data?.error || 'Sigup failed');
+    }
+  };
   return (
     <ScrollView
       keyboardShouldPersistTaps="handled"
@@ -102,7 +123,10 @@ const SignUpScreen = () => {
         <Text className="text-red-500">{errors?.phone?.message}</Text>
       )}
 
-      <TouchableOpacity className="bg-green-600 p-3 rounded-full mt-6">
+      <TouchableOpacity
+        onPress={handleSubmit(onSubmit)}
+        className="bg-green-600 p-3 rounded-full mt-6"
+      >
         <Text className="text-white text-center font-bold">Sign Up</Text>
       </TouchableOpacity>
 
